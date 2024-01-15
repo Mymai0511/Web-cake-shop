@@ -1,79 +1,47 @@
+package Model;
+
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Model;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 /**
  *
- * @author Thaycacac
+ * @author FPT University - PRJ301
  */
 public class DBContext {
 
-    public Connection getConnection() throws Exception {
-        String url = "jdbc:sqlserver://" + serverName + ":" + portNumber + ";databaseName=" + dbName;
-        Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-        return DriverManager.getConnection(url, userID, password);
-    }
-    private final String serverName = "localhost";
-    private final String dbName = "V2swpLazyCake";
-    private final String portNumber = "1433";
-    private final String userID = "sa";
-    private final String password = "12345";
+    protected Connection connection;
 
-    public void closeConnection(Connection con, PreparedStatement ps, ResultSet rs) throws SQLException {
-        if (rs != null && !rs.isClosed()) {
-            rs.close();
-        }
-        if (ps != null && !ps.isClosed()) {
-            ps.close();
-        }
-        if (con != null && !con.isClosed()) {
-            con.close();
+    public DBContext() {
+        //@Students: You are allowed to edit user, pass, url variables to fit 
+        //your system configuration
+        //You can also add more methods for Database Interaction tasks. 
+        //But we recommend you to do it in another class
+        // For example : StudentDBContext extends DBContext , 
+        //where StudentDBContext is located in dal package, 
+        try {
+            String user = "sa";
+            String pass = "12345";
+            String url = "jdbc:sqlserver://localhost:1433;databaseName=V2swpLazyCake";
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+            connection = DriverManager.getConnection(url, user, pass);
+        } catch (ClassNotFoundException | SQLException ex) {
+            Logger.getLogger(DBContext.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    public static void main(String[] args) throws Exception {
-        DBContext db = new DBContext();
-        System.out.println(db.getConnection());
+    
+        //kiểm tra kết nối với sql server
+    public static void main(String[] args) {
+        try {
+            System.out.println(new DBContext().connection);
+        } catch (Exception e) {
+        }
     }
 }
-
-     
-//public class DBContext {
-//
-//    InitialContext initCxt;
-//    Context envirCxt;
-//    String serverName;
-//    String port;
-//    String username;
-//    String password;
-//    String dbName;
-//    String imgFolder;
-//
-//    public DBContext() throws Exception {
-//        initCxt = new InitialContext();
-//        envirCxt = (Context) initCxt.lookup("java:/comp/env");
-//        serverName = (String) envirCxt.lookup("severName");
-//        port = (String) envirCxt.lookup("port");
-//        username = (String) envirCxt.lookup("username");
-//        password = (String) envirCxt.lookup("password");
-//        dbName = (String) envirCxt.lookup("dbName");
-//        imgFolder = (String) envirCxt.lookup("imgFolder");
-//    }
-//
-//    public Connection getConnection() throws Exception {
-//        Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-//        return DriverManager.getConnection("jdbc:sqlserver://" + serverName + ":" + port + ";databaseName=" + dbName, username, password);
-//    }
-//
-//    public String getResource() throws Exception {
-//        return imgFolder;
-//    }
-//
-//}
