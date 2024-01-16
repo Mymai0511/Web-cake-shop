@@ -29,7 +29,7 @@ public class DBContext {
         try {
             String user = "sa";
             String pass = "12345";
-            String url = "jdbc:sqlserver://localhost:1433;databaseName=V2swpLazyCake";
+            String url = "jdbc:sqlserver://localhost:1433;databaseName=V3swpLazyCake";
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             connection = DriverManager.getConnection(url, user, pass);
         } catch (ClassNotFoundException | SQLException ex) {
@@ -37,11 +37,11 @@ public class DBContext {
         }
     }
     
-        //kiểm tra kết nối với sql server
-    public static void main(String[] args) {
-        try {
-            System.out.println(new DBContext().connection);
-        } catch (Exception e) {
-        }
-    }
+//        //kiểm tra kết nối với sql server
+//    public static void main(String[] args) {
+//        try {
+//            System.out.println(new DBContext().connection);
+//        } catch (Exception e) {
+//        }
+//    }
 }

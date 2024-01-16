@@ -4,12 +4,19 @@
  */
 package Controller;
 
+import Entity.Admin;
+import Entity.Customer;
+import Model.AdminDAO;
+import Model.CustomerDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import java.net.URLEncoder;
 
 /**
  *
@@ -29,18 +36,83 @@ public class LoginControl extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet LoginControl</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet LoginControl at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+        String email = request.getParameter("email");// lấy tên người dùng nhập vào
+        String password = request.getParameter("password");// lấy mật khẩu người dùng nhập vào
+        String isRemember = request.getParameter("remember");
+        String isAdmin = request.getParameter("isAdmin");
+
+
+        if (isAdmin != null) {
+            /////////////////Admin Login
+            AdminDAO db = new AdminDAO();
+            Admin admin = db.loginByEmail(email, password);
+            if (admin != null) { // login successful!
+                Cookie c_name = new Cookie("username1", URLEncoder.encode(email, "UTF-8"));
+                Cookie c_pass = new Cookie("password1", password);
+                Cookie c_rem = new Cookie("remember1", isRemember);
+                if (isRemember != null) {
+                    c_name.setMaxAge(3600 * 24 * 30);
+                    c_pass.setMaxAge(3600 * 24 * 30);
+                    c_rem.setMaxAge(3600 * 24 * 30);
+                } else {
+                    c_name.setMaxAge(0);
+                    c_pass.setMaxAge(0);
+                    c_rem.setMaxAge(0);
+                }
+                response.addCookie(c_pass);
+                response.addCookie(c_name);
+                response.addCookie(c_rem);
+                //response.sendRedirect("Detal.jsp");
+
+                HttpSession session1 = request.getSession();
+                session1.setAttribute("acc", admin);
+                session1.setMaxInactiveInterval(60 * 15);//xét thời gian tồn tại của session trong 10 giây
+
+                response.sendRedirect("home_admin.html");
+
+            } else //login fail
+            {
+                request.setAttribute("mess", "Wrong user or pass");
+                request.getRequestDispatcher("login.jsp").forward(request, response);
+
+            }
+
+        } else {
+            /////////////////Customer Login
+            CustomerDAO db = new CustomerDAO();
+            Customer customer = db.loginByEmail(email, password);
+            if (customer != null) { // login successful!
+                Cookie c_name = new Cookie("username1", URLEncoder.encode(email, "UTF-8"));
+                Cookie c_pass = new Cookie("password1", password);
+                Cookie c_rem = new Cookie("remember1", isRemember);
+                if (isRemember != null) {
+                    c_name.setMaxAge(3600 * 24 * 30);
+                    c_pass.setMaxAge(3600 * 24 * 30);
+                    c_rem.setMaxAge(3600 * 24 * 30);
+                } else {
+                    c_name.setMaxAge(0);
+                    c_pass.setMaxAge(0);
+                    c_rem.setMaxAge(0);
+                }
+                response.addCookie(c_pass);
+                response.addCookie(c_name);
+                response.addCookie(c_rem);
+                //response.sendRedirect("Detal.jsp");
+
+                HttpSession session1 = request.getSession();
+                session1.setAttribute("acc", customer);
+                session1.setMaxInactiveInterval(60 * 15);//xét thời gian tồn tại của session trong 10 giây
+
+                response.sendRedirect("index.html");
+
+            } else //login fail
+            {
+                request.setAttribute("mess", "Wrong user or pass");
+                request.getRequestDispatcher("login.jsp").forward(request, response);
+
+            }
         }
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

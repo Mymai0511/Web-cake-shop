@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @author DELL
  */
-public class CustomerDAO extends DBContext{
+public class CustomerDAO extends DBContext {
 
     public Customer loginByEmail(String emailAddress, String password) {
         Customer customer = new Customer();
@@ -38,11 +38,10 @@ public class CustomerDAO extends DBContext{
     }
 
     public List<Customer> getAllCustomers() {
-        List<Customer> customers  = new ArrayList<>();
+        List<Customer> customers = new ArrayList<>();
         // lấy dữ liệu bảng product+ category
         String sql = "SELECT * FROM customers ";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql);
-             ResultSet resultSet = preparedStatement.executeQuery()) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql); ResultSet resultSet = preparedStatement.executeQuery()) {
             while (resultSet.next()) {
                 Customer customer = mapResultSetToCustomer(resultSet);
                 customers.add(customer);
@@ -50,11 +49,11 @@ public class CustomerDAO extends DBContext{
         } catch (SQLException e) {
             e.printStackTrace(); // Handle the exception properly in your application
         }
-        
+
         return customers;
     }
-    
-     // Helper method to map ResultSet to Customer object
+
+    // Helper method to map ResultSet to Customer object
     private Customer mapResultSetToCustomer(ResultSet resultSet) throws SQLException {
         return new Customer(
                 resultSet.getInt("id"),
@@ -77,4 +76,52 @@ public class CustomerDAO extends DBContext{
                 resultSet.getInt("is_locked")
         );
     }
+
+    public boolean customerExists(String emailAddress) {
+        String sql = "SELECT COUNT(*) FROM customers WHERE email_address = ? AND is_locked = 0";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, emailAddress);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    int count = resultSet.getInt(1);
+                    return count > 0;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Handle the exception properly in your application
+        }
+
+        return false;
+    }
+
+    public boolean signupCustomer(String emailAddress, String password) {
+        String sql = "INSERT INTO customers ( email_address, password, role_id, create_at) "
+                + "VALUES ( ?, ?, 4, CURRENT_TIMESTAMP)";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, emailAddress);
+            preparedStatement.setString(2, password);
+
+            int affectedRows = preparedStatement.executeUpdate();
+            return affectedRows > 0;
+        } catch (SQLException e) {
+            e.printStackTrace(); // Handle the exception properly in your application
+        }
+
+        return false;
+    }
+
+    public static void main(String[] args) {
+        CustomerDAO u = new CustomerDAO();
+        Customer c = u.loginByEmail("nguyenvana@example.com", "12345");
+        System.out.println(c);
+        boolean d = u.customerExists("nguyenvana@exaple.com");
+        System.out.println(d);
+//        boolean e = u.signupCustomer("maihoang@gmail.com", "12345");
+//        System.out.println(d);
+
+    }
+
 }

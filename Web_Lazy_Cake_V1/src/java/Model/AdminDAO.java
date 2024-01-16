@@ -78,4 +78,24 @@ public class AdminDAO extends DBContext{
                 resultSet.getInt("is_locked")
         );
     }
+    
+        public static void main(String[] args) {
+        AdminDAO u = new AdminDAO();
+        Admin c = u.loginByEmail("admin@fpt.edu.vn", "123456");
+            System.out.println(c);
+//        User a = u.loginByName("tienduc", "1234567");
+//        u.addAccount("TranLoan", "jknk", "Nam Định", "0913927101", "0", "1");
+//        u.EditAccount("13", "TranLoan", "jknk", "Nam Định", "0913927101", "0", "1");
+//        List<User> list = u.getAll();
+//        int t = u.getTotalAccount();
+//        List<User> lista = u.pagingAccount15(1);
+//        for (User o : lista) {
+//            System.out.println(o);
+//        }
+//
+//        User lID = u.getAccountByID("3");
+//        System.out.println(t);
+//        System.out.println(a);
+//        System.out.println(lID);
+    }
 }

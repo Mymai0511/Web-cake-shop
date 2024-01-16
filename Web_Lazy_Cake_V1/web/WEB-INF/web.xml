@@ -4,8 +4,16 @@
         <servlet-name>LoginControl</servlet-name>
         <servlet-class>Controller.LoginControl</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>SignupControl</servlet-name>
+        <servlet-class>Controller.SignupControl</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginControl</servlet-name>
         <url-pattern>/LoginControl</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SignupControl</servlet-name>
+        <url-pattern>/SignupControl</url-pattern>
     </servlet-mapping>
 </web-app>
